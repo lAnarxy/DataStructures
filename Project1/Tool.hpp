@@ -3,15 +3,13 @@
 #include <string>
 using namespace std;
 
-class Plant {
+class Tool {
     public:
-        Plant(string name, char type, int plant_date);
+        Tool(string name, char type);
         int age;
         string name;
         char type;
         int position;
-        int water;
-        int maintenance;
 };
 
-ostream& operator<<(ostream& os, const Plant& p);
+ostream& operator<<(ostream& os, const Tool& t);
