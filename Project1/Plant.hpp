@@ -15,3 +15,4 @@ class Plant {
 };
 
 ostream& operator<<(ostream& os, const Plant& p);
+ostream& operator<<(ostream& os, const Plant* p);

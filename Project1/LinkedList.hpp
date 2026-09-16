@@ -4,6 +4,7 @@ using namespace std;
 
 template <typename T> class LinkedList;
 template <typename T> ostream& operator<<(ostream& os, const LinkedList<T>& l);
+template <typename T> ostream& operator<<(ostream& os, const LinkedList<T>* l);
 
 template <typename T>
 class Node {
@@ -31,6 +32,7 @@ class LinkedList {
         void clear();
 
         friend ostream& operator<< <T>(ostream& os, const LinkedList<T>& l);
+        friend ostream& operator<< <T>(ostream& os, const LinkedList<T>* l);
 };
 
 // Implementation for inserting a new node with the given 
@@ -93,6 +95,28 @@ ostream& operator<<(ostream& os, const LinkedList<T>& l) {
 
     int index = 0;
     Node<T>* current = l.head;
+    while (current != nullptr) {
+        try {
+            os << "Index " << index << ": " << current->data << endl;
+            current = current->next;
+            index++;
+        } catch (const exception& e) {
+            os << "Error printing node at index " << index << ": " << e.what() << endl;
+            return os;
+        }
+    } 
+    return os;
+}
+
+template <typename T>
+ostream& operator<<(ostream& os, const LinkedList<T>* l) {
+    if (l->head == nullptr) {
+        os << "The list is empty." << endl;
+        return os;
+    }
+
+    int index = 0;
+    Node<T>* current = l->head;
     while (current != nullptr) {
         try {
             os << "Index " << index << ": " << current->data << endl;

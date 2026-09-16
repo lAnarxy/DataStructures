@@ -17,11 +17,17 @@ int main() {
     }
     cout << "Preparing " << numGardens << " gardens..." << endl;
 
-    LinkedList<LinkedList<Plant>>* gardens = new LinkedList<LinkedList<Plant>>();
-    LinkedList<Plant> garden1 = LinkedList<Plant>();
-    Plant test_plant = Plant("Test Plant", 'F', 0);
+    LinkedList<int>* test_list = new LinkedList<int>();
+    test_list->insert(3, 0);
+    test_list->insert(1, 0);
+    test_list->insert(2, 1);
+    test_list->print();
+
+    LinkedList<LinkedList<Plant*>*>* gardens = new LinkedList<LinkedList<Plant*>*>();
+    LinkedList<Plant*>* garden1 = new LinkedList<Plant*>();
+    Plant* test_plant = new Plant("Test Plant", 'F', 0);
     cout << test_plant << endl;
-    garden1.insert(test_plant, 0);
+    garden1->insert(test_plant, 0);
     cout << garden1 << endl;
     gardens->insert(garden1, 0);
     gardens->print();

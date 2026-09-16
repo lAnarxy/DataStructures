@@ -13,3 +13,8 @@ ostream& operator<<(ostream& os, const Plant& p) {
     os << "This is a " << p.name << ". It is " << p.age << " weeks old";
     return os;
 }
+
+ostream& operator<<(ostream& os, const Plant* p) {
+    os << "This is a " << p->name << ". It is " << p->age << " weeks old";
+    return os;
+}
