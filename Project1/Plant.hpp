@@ -6,7 +6,7 @@ using namespace std;
 class Plant {
     public:
         Plant(string name, char type, int plant_date);
-        int age;
+        int plant_date;
         string name;
         char type;
         int position;
