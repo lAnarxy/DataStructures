@@ -10,19 +10,20 @@ template <typename T>
 class Node {
     public:
         T data;
-        Node* previous;
         Node* next;
         
-        Node(const T& value) : data(value), previous(nullptr), next(nullptr) {}
+        Node(const T& value) : data(value), next(nullptr) {}
 };
 
 template <typename T>
 class LinkedList {
     private:
         Node<T>* head;
-        size_t size;
+        Node<T>* tail;
+        
     public:
-        LinkedList() : head(nullptr), size(0) {}
+        size_t size;
+        LinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
         ~LinkedList() {
             clear();
@@ -45,24 +46,28 @@ template <typename T>
 void LinkedList<T>::insert(T value, int position) {
     Node<T>* newNode = new Node<T>(value);
     
-    if (position == 0 || head == nullptr) {
+    if (head == nullptr || position == 0) {
         newNode->next = head;
-        if (head != nullptr) {
-            head->previous = newNode;
-        }
         head = newNode;
+        if (tail == nullptr) {
+            cout<<"List Created"<<endl;
+            tail = newNode;
+        }
+        tail->next = newNode;
     } else {
         Node<T>* current = head;
-        for (int i = 0; i < position - 1 && current->next != nullptr; ++i) {
+        for (int i = 0; i < position - 1; ++i) {
             current = current->next;
         }
         newNode->next = current->next;
-        newNode->previous = current;
-        if (newNode->next != nullptr) {
-            newNode->next->previous = newNode;
-        }
         current->next = newNode;
+        
+        if (newNode->next == head) {
+            tail = newNode;
+        }
     }
+    size++;
+    return;
 }
 
 template <typename T>
@@ -72,25 +77,24 @@ void LinkedList<T>::remove(int position) {
     }
 
     Node<T>* temp;
-    if (position == 0) {
+    if (head == tail){
         temp = head;
-        head = head->next;
-        if (head != nullptr) {
-            head->previous = nullptr;
-        }
+        head = nullptr;
+        tail = nullptr;
+    } else if (position == 0) {
+        temp = head;
+        tail->next = temp->next;
+        head = temp->next;
     } else {
         Node<T>* current = head;
         for (int i = 0; i < position - 1; i++) {
-            if (current->next == nullptr) {
-                return;
-            }
             current = current->next;
         }
         temp = current->next;
-        if (temp->next != nullptr){
-            temp->next->previous = current;
-        }
         current->next = temp->next;
+        if (current->next == head) {
+            tail = current;
+        }
     }
     delete temp;
     size--;
@@ -106,7 +110,7 @@ void LinkedList<T>::print() {
 
     int index = 0;
     Node<T>* current = head;
-    while (current != nullptr) {
+    while (index < size + 1) {
         try {
             cout << "Index " << index << ": " << current->data << endl;
             current = current->next;
@@ -130,7 +134,7 @@ void LinkedList<T>::clear() {
 }
 
 template <typename T>
-Node<T>* LinkedList<T>::getNode(int position = 0) {
+Node<T>* LinkedList<T>::getNode(int position) {
     if (position < 0 || position >= size) {
         return nullptr;
     }

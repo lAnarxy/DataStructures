@@ -17,6 +17,21 @@ int main() {
     }
     cout << "Preparing " << numGardens << " gardens..." << endl;
 
+    LinkedList<int>* test = new LinkedList<int>();
+    test->print();
+    test->insert(5);
+    test->insert(4);
+    test->insert(2);
+    test->insert(3, 1);
+    test->insert(1);
+    test->insert(6, 5);
+    test->print();
+    test->remove(5);
+    test->print();
+    cout<< test->size << endl;
+    
+    Node<int>* check = test->getNode(4);
+    if (check->next == nullptr) {cout<<"Fail"<<endl;}
     // Linked list of gardens, each garden is a linked list of plants
     // LinkedList<LinkedList<Plant*>*>* gardens = new LinkedList<LinkedList<Plant*>*>();
 
