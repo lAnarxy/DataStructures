@@ -65,6 +65,20 @@ int main() {
             Plant* newPlant = createPlant(time);
             gardenPos->data->insert_front(newPlant);
             plantPos = gardenPos->data->getNode();
+        } else if (command == 'r') {
+            if (gardenPos->data->getSize() == 0) {
+                cout<<"There are no plants to remove."<<endl;
+            } else {
+                int index = 0;
+                Node<Plant*>* deleteCheck = gardenPos->data->getNode();
+                while (plantPos != deleteCheck) {
+                    deleteCheck = deleteCheck -> next;
+                    index++;
+                }
+                cout<<"You removed the plant."<<endl;
+                gardenPos->data->remove(index);
+                plantPos = gardenPos->data->getNode();
+            }
         }
 
         getCommand(command, numGardens, 1);
@@ -81,7 +95,7 @@ void getCommand(char &command, int numGardens, int variant) {
         cout<<"There are " << numGardens << " round gardens in front of you in a circle.\nType 'g' to go to the first garden\nType 'x' to leave the garden" << endl;
     }
     if (variant == 1) {
-        cout<<"You are standing at a garden. There is a pot in front of you.\nType 'g' to go to the next garden\nType 'i' to inspect the pot in front of you.\nType 'p' to plant a new pot.\nType 'm' to move to the next pot.\nType 'x' to leave the garden"<<endl;
+        cout<<"You are standing at a garden. There is a pot in front of you.\nType 'g' to go to the next garden\nType 'i' to inspect the pot in front of you.\nType 'p' to plant a new pot.\nType 'm' to move to the next pot.\nType 'r' to remove the plant in front of you.\nType 'x' to leave the garden"<<endl;
     }
     cin >> command;
     while (cin.fail()) {
