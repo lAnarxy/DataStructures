@@ -4,6 +4,9 @@
 // #include "Tool.hpp"
 using namespace std;
 
+void getCommand(char &command, int numGardens, int variant);
+Plant* createPlant(int time);
+
 int main() {
     cout << "Welcome to the Digital Garden!" << endl;
     int numGardens;
@@ -16,24 +19,100 @@ int main() {
         cin >> numGardens;
     }
     cout << "Preparing " << numGardens << " gardens..." << endl;
-
-    LinkedList<int>* test = new LinkedList<int>();
-    test->print();
-    test->insert(5);
-    test->insert(4);
-    test->insert(2);
-    test->insert(3, 1);
-    test->insert(1);
-    test->insert(6, 5);
-    test->print();
-    test->remove(5);
-    test->print();
-    cout<< test->size << endl;
     
-    Node<int>* check = test->getNode(4);
-    if (check->next == nullptr) {cout<<"Fail"<<endl;}
     // Linked list of gardens, each garden is a linked list of plants
-    // LinkedList<LinkedList<Plant*>*>* gardens = new LinkedList<LinkedList<Plant*>*>();
+    LinkedList<LinkedList<Plant*>*>* gardens = new LinkedList<LinkedList<Plant*>*>();
+    for (int i = 0; i < numGardens; i++) {
+        LinkedList<Plant*>* garden = new LinkedList<Plant*>;
+        gardens->insert_back(garden);
+    }
+
+    Node<LinkedList<Plant*>*>* gardenPos = gardens->getNode();
+    Node<LinkedList<Plant*>*>* initialPos = gardenPos;
+    char command;
+    int time = 0;
+    bool started = false;
+    getCommand(command, numGardens, 0);
+    while(command != 'x') {
+        Node<Plant*>* plantPos;
+        if (command == 'g') {
+            if (started) {
+                gardenPos = gardenPos->next;
+            } else {
+                started = true;
+            }
+            cout<<"You have arrived at the next garden!"<<endl;
+            cout<<"This garden has " << gardenPos->data->getSize() << " plants in it." <<endl;
+            plantPos = gardenPos->data->getNode();
+        } else if (command == 'i') {
+            if (plantPos == nullptr) {
+                cout<<"The pot is empty. You decide to plant something new!"<<endl;
+                Plant* newPlant = createPlant(time);
+                gardenPos->data->insert_back(newPlant);
+                plantPos = gardenPos->data->getNode();
+            } else {
+                plantPos->data->updateAge(time);
+                cout<<"There is a pot with a plant in it.\n"<< plantPos->data <<endl;
+            }
+        } else if (command == 'm') {
+            if (gardenPos->data->getSize() < 2) {
+                cout<<"There is only one pot."<<endl;
+            } else {
+                plantPos = plantPos->next;
+            }
+        } else if (command == 'p') {
+            cout<<"You walk to the front of the garden. You place down another pot and decide to plant something new!"<<endl;
+            Plant* newPlant = createPlant(time);
+            gardenPos->data->insert_front(newPlant);
+            plantPos = gardenPos->data->getNode();
+        }
+
+        getCommand(command, numGardens, 1);
+        cout<<"\n\n"<<endl;
+        time++;
+    }
+    
 
     return 0;
+}
+
+void getCommand(char &command, int numGardens, int variant) {
+    if (variant == 0) {
+        cout<<"There are " << numGardens << " round gardens in front of you in a circle.\nType 'g' to go to the first garden\nType 'x' to leave the garden" << endl;
+    }
+    if (variant == 1) {
+        cout<<"You are standing at a garden. There is a pot in front of you.\nType 'g' to go to the next garden\nType 'i' to inspect the pot in front of you.\nType 'p' to plant a new pot.\nType 'm' to move to the next pot.\nType 'x' to leave the garden"<<endl;
+    }
+    cin >> command;
+    while (cin.fail()) {
+        cout << "Invalid Input. Please enter a valid command" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> command;
+    }
+    return;
+    
+}
+
+Plant* createPlant(int time) {
+    string name;
+    cout<<"What is the name of this plant? "<<endl;
+    cin >> name;
+    while (cin.fail()) {
+        cout << "Invalid Input. Please enter a valid string" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> name;
+    }
+    string type;
+    cout<<"What type of plant is it? (Tree, Flower, Tuber, etc) "<<endl;
+    cin >> type;
+    while (cin.fail()) {
+        cout << "Invalid Input. Please enter a valid string" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> type;
+    }
+
+    return new Plant(name, type, time);
 }

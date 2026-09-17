@@ -5,13 +5,15 @@ using namespace std;
 
 class Plant {
     public:
-        Plant(string name, char type, int plant_date);
+        Plant(string name, string type, int plant_date);
         int plant_date;
+        int age;
         string name;
-        char type;
+        string type;
         int position;
         int water;
         int maintenance;
+        void updateAge(int time);
 };
 
 ostream& operator<<(ostream& os, const Plant& p);

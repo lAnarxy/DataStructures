@@ -20,16 +20,17 @@ class LinkedList {
     private:
         Node<T>* head;
         Node<T>* tail;
-        
-    public:
         size_t size;
+    public:
         LinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
         ~LinkedList() {
             clear();
         }
 
-        void insert(T value, int position = 0);
+        void insert_at_index(T value, int position = 0);
+        void insert_front(T value);
+        void insert_back(T value);
         void remove(int position = 0);
         size_t getSize() const { return size; }
         void print();
@@ -43,7 +44,7 @@ class LinkedList {
 // Implementation for inserting a new node with the given 
 // value at given position (default is before head)
 template <typename T>
-void LinkedList<T>::insert(T value, int position) {
+void LinkedList<T>::insert_at_index(T value, int position) {
     Node<T>* newNode = new Node<T>(value);
     
     if (head == nullptr || position == 0) {
@@ -67,6 +68,18 @@ void LinkedList<T>::insert(T value, int position) {
         }
     }
     size++;
+    return;
+}
+
+template <typename T>
+void LinkedList<T>::insert_front(T value) {
+    insert_at_index(value);
+    return;
+}
+
+template <typename T>
+void LinkedList<T>::insert_back(T value) {
+    insert_at_index(value, size);
     return;
 }
 
