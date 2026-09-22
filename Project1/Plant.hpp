@@ -11,8 +11,8 @@ class Plant {
         string name;
         string type;
         int position;
-        int water;
-        int maintenance;
+        int water_date;
+        int maintenance_date;
         void updateAge(int time);
 };
 

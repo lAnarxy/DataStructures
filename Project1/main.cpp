@@ -35,6 +35,8 @@ int main() {
     getCommand(command, numGardens, 0);
     while(command != 'x') {
         Node<Plant*>* plantPos;
+        
+        // Movement between gardens.
         if (command == 'g') {
             if (started) {
                 gardenPos = gardenPos->next;
@@ -44,6 +46,8 @@ int main() {
             cout<<"You have arrived at the next garden!"<<endl;
             cout<<"This garden has " << gardenPos->data->getSize() << " plants in it." <<endl;
             plantPos = gardenPos->data->getNode();
+
+        // Inspect current pot
         } else if (command == 'i') {
             if (plantPos == nullptr) {
                 cout<<"The pot is empty. You decide to plant something new!"<<endl;
@@ -54,17 +58,23 @@ int main() {
                 plantPos->data->updateAge(time);
                 cout<<"There is a pot with a plant in it.\n"<< plantPos->data <<endl;
             }
+
+        // Move to next pot
         } else if (command == 'm') {
             if (gardenPos->data->getSize() < 2) {
                 cout<<"There is only one pot."<<endl;
             } else {
                 plantPos = plantPos->next;
             }
+
+        // Add a new pot
         } else if (command == 'p') {
             cout<<"You walk to the front of the garden. You place down another pot and decide to plant something new!"<<endl;
             Plant* newPlant = createPlant(time);
             gardenPos->data->insert_front(newPlant);
             plantPos = gardenPos->data->getNode();
+
+        // Remove current pot
         } else if (command == 'r') {
             if (gardenPos->data->getSize() == 0) {
                 cout<<"There are no plants to remove."<<endl;
@@ -86,10 +96,11 @@ int main() {
         time++;
     }
     
-
+    delete gardens;
     return 0;
 }
 
+// Function used to gat command input from user
 void getCommand(char &command, int numGardens, int variant) {
     if (variant == 0) {
         cout<<"There are " << numGardens << " round gardens in front of you in a circle.\nType 'g' to go to the first garden\nType 'x' to leave the garden" << endl;
@@ -108,6 +119,7 @@ void getCommand(char &command, int numGardens, int variant) {
     
 }
 
+// Prompts user to create a new plant at given time.
 Plant* createPlant(int time) {
     string name;
     cout<<"What is the name of this plant? "<<endl;

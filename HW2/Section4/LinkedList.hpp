@@ -38,6 +38,7 @@ class LinkedList {
         void print();
         void clear();
         Node<T>* getNode(int position = 0);
+        void setHead(Node<T>* newHead);
 
         friend ostream& operator<< <T>(ostream& os, const LinkedList<T>& l);
         friend ostream& operator<< <T>(ostream& os, const LinkedList<T>* l);
@@ -53,10 +54,11 @@ void LinkedList<T>::insert_at_index(T value, int position) {
         newNode->next = head;
         head = newNode;
         if (tail == nullptr) {
-            cout<<"List Created"<<endl;
             tail = newNode;
         }
+    } else if (position == size) {
         tail->next = newNode;
+        tail = newNode;
     } else {
         Node<T>* current = head;
         for (int i = 0; i < position - 1; ++i) {
@@ -65,7 +67,7 @@ void LinkedList<T>::insert_at_index(T value, int position) {
         newNode->next = current->next;
         current->next = newNode;
         
-        if (newNode->next == head) {
+        if (newNode->next == nullptr) {
             tail = newNode;
         }
     }
@@ -128,7 +130,7 @@ void LinkedList<T>::print() {
 
     int index = 0;
     Node<T>* current = head;
-    while (index < size + 1) {
+    while (index < size) {
         try {
             cout << "Index " << index << ": " << current->data << endl;
             current = current->next;
@@ -162,6 +164,21 @@ Node<T>* LinkedList<T>::getNode(int position) {
         current = current->next;
     }
     return current;
+}
+
+// Reassigns a new head value to the list
+template <typename T>
+void LinkedList<T>::setHead(Node<T>* newHead) {
+    if (newHead != nullptr){
+        size++;
+        Node<T>* curr = newHead;
+        while (curr->next != nullptr && size < 10) {
+            size++;
+            curr = curr->next;
+        }
+        head = newHead;
+        tail = curr;
+    }
 }
 
 // Adds functionality for cout<<
