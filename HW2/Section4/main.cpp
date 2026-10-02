@@ -34,6 +34,7 @@ Node<T>* reverseList(Node<T>* head) {
 
     // Each node reverses the one in front of it
     head->next->next = head;
+    // Sets its own next to null (sets old first node as tail)
     head->next = nullptr;
 
     // Returns the old last node as the new head
