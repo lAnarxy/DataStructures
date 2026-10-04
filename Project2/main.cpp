@@ -16,8 +16,7 @@ int main() {
     sandwich->flip(); // Flip the sandwich to change which side is being edited.
     sandwich->addIngredient(new Ingredient("Bread", 5));
     inventory[0] = sandwich;
-    cout << *inventory[0] << endl;
-    inventory[0]->print();
+    cout << inventory[0] << endl;
     
     // Clean up dynamically allocated memory
     for (int i = 0; i < 16; ++i) {

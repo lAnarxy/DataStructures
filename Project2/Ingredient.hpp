@@ -5,6 +5,20 @@
 #include <string>
 using namespace std;
 
+// Prototypes for stream overloads
+class Ingredient;
+class Dish;
+class Sandwich;
+
+// Stream overload prototypes for printing Ingredient, Dish, and Sandwich objects.
+ostream& operator<<(ostream& os, const Ingredient& i);
+ostream& operator<<(ostream& os, const Ingredient* i);  
+ostream& operator<<(ostream& os, const Dish& d);
+ostream& operator<<(ostream& os, const Dish* d);
+ostream& operator<<(ostream& os, const Sandwich& s);
+ostream& operator<<(ostream& os, const Sandwich* s);
+
+
 // The Ingredient class is the base block of other classes, and cannot contain other ingredients itself.
 class Ingredient {
     private:
@@ -20,8 +34,8 @@ class Ingredient {
         int getCalories() const { return calories; }
         list<string>& getPreparations() { return preparations; }
         void addPreparation(const string& prep) { preparations.push_back(prep); }
-        virtual void print() {
-            cout << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.";
+        virtual void print(ostream& os) const {
+            os << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.";
         }
         virtual ~Ingredient() {}
 };
@@ -37,10 +51,10 @@ class Dish : public Ingredient {
             calories += i->getCalories();
         }
         list<Ingredient*>& getIngredients() { return ingredients; }
-        void print() {
-            cout << "This dish is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
+        void print(ostream& os) const {
+            os << "This dish is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
             for (const Ingredient* ingredient : ingredients) {
-                cout << "\n  - " << ingredient;
+                os << "\n  - " << ingredient;
             }
         }
 };
@@ -54,24 +68,26 @@ private:
         Sandwich(const string& n) : Ingredient(n, 0), ingredients() {}
         void addIngredient(Ingredient* i) { 
             if (flipped) {
-                ingredients.push_back(i);
+                ingredients.push_back(i); // Add to the back if flipped
             } else {
-                ingredients.push_front(i);
+                ingredients.push_front(i); // Add to the front if not flipped
             }
             calories += i->getCalories();
         }
         void flip() { flipped = !flipped; }
         bool isFlipped() const { return flipped; }
         const deque<Ingredient*>& getIngredients() const { return ingredients; }
-        void print() {
-            cout << "This sandwich is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
+        void print(ostream& os) const {
+            os << "This sandwich is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
             if (flipped) {
+                // Print ingredients in reverse order if the sandwich is flipped
                 for (auto it = ingredients.rbegin(); it != ingredients.rend(); ++it) {
-                    cout << "\n  - " << *it;
+                    os << "\n  - " << *it;
                 }
             } else {
+                // Print ingredients in normal order if the sandwich is not flipped
                 for (const Ingredient* ingredient : ingredients) {
-                    cout << "\n  - " << ingredient;
+                    os << "\n  - " << ingredient;
                 }
             }
         }
@@ -80,48 +96,30 @@ private:
 
 // Ingredient Printing
 ostream& operator<<(ostream& os, const Ingredient& i) {
-    os << "This ingredient is: " << i.getName() << ". it has " << i.getCalories() << " calories.";
+    i.print(os);
     return os;
 }
 ostream& operator<<(ostream& os, const Ingredient* i) {
-    os << "This ingredient is: " << i->getName() << ". it has " << i->getCalories() << " calories.";
+    i->print(os);
     return os;
 }
 
 // Dish Printing
 ostream& operator<<(ostream& os, const Dish& d) {
-    os << "This dish is: " << d.getName() << ". it has a total of " << d.getCalories() << " calories.";
+    d.print(os);
     return os;
 }
 ostream& operator<<(ostream& os, const Dish* d) {
-    os << "This dish is: " << d->getName() << ". it has a total of " << d->getCalories() << " calories.";
+    d->print(os);
     return os;
 }
 
 // Sandwich Printing
 ostream& operator<<(ostream& os, const Sandwich& s) {
-    os << "This sandwich is: " << s.getName() << ". it has a total of " << s.getCalories() << " calories.\nIt contains the following: ";
-    if (s.isFlipped()) {
-        for (auto it = s.getIngredients().rbegin(); it != s.getIngredients().rend(); ++it) {
-            os << "\n  - " << *it;
-        }
-    } else {
-        for (const Ingredient* ingredient : s.getIngredients()) {
-            os << "\n  - " << ingredient;
-        }
-    }
+    s.print(os);
     return os;
 }
 ostream& operator<<(ostream& os, const Sandwich* s) {
-    os << "This sandwich is: " << s->getName() << ". it has a total of " << s->getCalories() << " calories.\nIt contains the following: ";
-    if (s->isFlipped()) {
-        for (auto it = s->getIngredients().rbegin(); it != s->getIngredients().rend(); ++it) {
-            os << "\n  - " << *it;
-        }
-    } else {
-        for (const Ingredient* ingredient : s->getIngredients()) {
-            os << "\n  - " << ingredient;
-        }
-    }
+    s->print(os);
     return os;
 }
