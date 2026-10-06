@@ -30,10 +30,15 @@ class Ingredient {
     
     public:
         Ingredient(const string& n, int c) : name(n), calories(c), preparations() {}
+        // Returns name of the ingredient
         string getName() const { return name; }
+        // Returns calories for the ingredient
         int getCalories() const { return calories; }
+        // Returns the list of preparations for the ingredient
         list<string>& getPreparations() { return preparations; }
+        // Adds a preparation method to the ingredient
         void addPreparation(const string& prep) { preparations.push_back(prep); }
+        // Print function used for polymorphic << overload compatibility
         virtual void print(ostream& os) const {
             os << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.";
         }
@@ -46,11 +51,14 @@ class Dish : public Ingredient {
         list<Ingredient*> ingredients; // The list of ingredients in the dish.
     public:
         Dish(const string& n) : Ingredient(n, 0), ingredients() {}
+        // Adds ingredient and its calories to dish
         void addIngredient(Ingredient* i) { 
             ingredients.push_back(i);
             calories += i->getCalories();
         }
+        // Returns the list of ingredients in the dish
         list<Ingredient*>& getIngredients() { return ingredients; }
+        // Print function used for polymorphic << overload compatibility
         void print(ostream& os) const {
             os << "This dish is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
             for (const Ingredient* ingredient : ingredients) {
@@ -66,6 +74,7 @@ private:
         bool flipped = false; // Whether the sandwich is flipped or not.
     public:
         Sandwich(const string& n) : Ingredient(n, 0), ingredients() {}
+        // Adds ingredient and its calories to the 'top' of sandwich. Top side depends on flipped state.
         void addIngredient(Ingredient* i) { 
             if (flipped) {
                 ingredients.push_back(i); // Add to the back if flipped
@@ -74,9 +83,13 @@ private:
             }
             calories += i->getCalories();
         }
+        // Flips the sandwich, changing which side is considered the 'top'
         void flip() { flipped = !flipped; }
+        // Returns whether the sandwich is flipped or not
         bool isFlipped() const { return flipped; }
+        // Returns the deque of ingredients in the sandwich
         const deque<Ingredient*>& getIngredients() const { return ingredients; }
+        // Print function used for polymorphic << overload compatibility
         void print(ostream& os) const {
             os << "This sandwich is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
             if (flipped) {
@@ -95,31 +108,31 @@ private:
 
 
 // Ingredient Printing
-ostream& operator<<(ostream& os, const Ingredient& i) {
+inline ostream& operator<<(ostream& os, const Ingredient& i) {
     i.print(os);
     return os;
 }
-ostream& operator<<(ostream& os, const Ingredient* i) {
+inline ostream& operator<<(ostream& os, const Ingredient* i) {
     i->print(os);
     return os;
 }
 
 // Dish Printing
-ostream& operator<<(ostream& os, const Dish& d) {
+inline ostream& operator<<(ostream& os, const Dish& d) {
     d.print(os);
     return os;
 }
-ostream& operator<<(ostream& os, const Dish* d) {
+inline ostream& operator<<(ostream& os, const Dish* d) {
     d->print(os);
     return os;
 }
 
 // Sandwich Printing
-ostream& operator<<(ostream& os, const Sandwich& s) {
+inline ostream& operator<<(ostream& os, const Sandwich& s) {
     s.print(os);
     return os;
 }
-ostream& operator<<(ostream& os, const Sandwich* s) {
+inline ostream& operator<<(ostream& os, const Sandwich* s) {
     s->print(os);
     return os;
 }

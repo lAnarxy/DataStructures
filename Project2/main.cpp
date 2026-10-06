@@ -1,13 +1,17 @@
 #include <iostream>
 #include <deque>
 #include "Ingredient.hpp"
+#include "Kitchen.hpp"
 using namespace std;
+void inventoryMenu(Ingredient* inventory[16], char inventoryID[16]);
 
 // Idea - sandwich maker where ingredients can be added to the top and/or bottom using deque
 // Sandwich could be flipped to change which side is being edited.
 int main() {
-    // Inventory will be able to hold up to 16 previously made ingredients, dishes, or sandwiches which can be used in any amount.
-    Ingredient* inventory[16] = {nullptr};
+    Kitchen* kitchen = new Kitchen(24, 8);
+
+    cout << "  ------       Welcome to the Kitchen Simulator!       ------" << endl;
+    cout << "For ease of use we recommend increasing the size of the terminal!" << endl;
     Sandwich* sandwich = new Sandwich("Test Sandwich");
     sandwich->addIngredient(new Ingredient("Lettuce", 2));
     sandwich->addIngredient(new Ingredient("Tomato", 3));
@@ -15,11 +19,11 @@ int main() {
     cout << sandwich << endl;
     sandwich->flip(); // Flip the sandwich to change which side is being edited.
     sandwich->addIngredient(new Ingredient("Bread", 5));
-    inventory[0] = sandwich;
-    cout << inventory[0] << endl;
+    kitchen->addItem(sandwich);
+    cout << sandwich << endl;
     
+    kitchen->inventoryMenu();
     // Clean up dynamically allocated memory
-    for (int i = 0; i < 16; ++i) {
-        delete inventory[i];
-    }
+    delete kitchen;
+    delete sandwich;
 }
