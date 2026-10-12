@@ -6,6 +6,7 @@ class Kitchen {
     private:
         // Inventory will be able to hold up to 16 previously made 
         // ingredients, dishes, or sandwiches which can be used in any amount.
+        string name = "Kitchen";
         Ingredient** inventory;
         char* inventoryID; // Tracks what object each element is
         int size;
@@ -29,7 +30,13 @@ class Kitchen {
             delete[] inventoryID;
         }
 
+        Ingredient* prepareIngredient(Ingredient* item);
+        Ingredient* prepareSandwich(Ingredient* item);
+        Ingredient* prepareDish(Ingredient* item);
+        string getName() const { return name; }
+        void setName(const string& newName) { name = newName; }
         void addItem(Ingredient* item);
-        void pickItem();
-        void inventoryMenu();
+        Ingredient* getItem(int index);
+        Ingredient* inventoryMenu();
+        void mainMenu();
 };

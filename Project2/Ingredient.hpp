@@ -23,24 +23,33 @@ ostream& operator<<(ostream& os, const Sandwich* s);
 class Ingredient {
     private:
         string name;
-        list<string> preparations; // How the ingredient is prepared. i.e., chopped, diced, boiled, etc.
-    
+        list<string> preparations; // How the ingredient is prepared. i.e., chopped, diced, boiled, etc. 
+
     protected:
         int calories;
+        char type;
     
     public:
-        Ingredient(const string& n, int c) : name(n), calories(c), preparations() {}
+        Ingredient(const string& n, int c) : name(n), calories(c), preparations(), type('I') {}
         // Returns name of the ingredient
         string getName() const { return name; }
         // Returns calories for the ingredient
         int getCalories() const { return calories; }
+        // Returns the type of ingredient ('I' for Ingredient, 'D' for Dish, 'S' for Sandwich)
+        char getType() const { return type; }
         // Returns the list of preparations for the ingredient
         list<string>& getPreparations() { return preparations; }
         // Adds a preparation method to the ingredient
         void addPreparation(const string& prep) { preparations.push_back(prep); }
         // Print function used for polymorphic << overload compatibility
         virtual void print(ostream& os) const {
-            os << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.";
+            os << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.\n";
+            if (!preparations.empty()) {
+                os << "Preparations: ";
+                for (const string& prep : preparations) {
+                    os << prep << ", ";
+                }
+            }
         }
         virtual ~Ingredient() {}
 };
@@ -50,7 +59,7 @@ class Dish : public Ingredient {
     private:
         list<Ingredient*> ingredients; // The list of ingredients in the dish.
     public:
-        Dish(const string& n) : Ingredient(n, 0), ingredients() {}
+        Dish(const string& n) : Ingredient(n, 0), ingredients() { type = 'D'; }
         // Adds ingredient and its calories to dish
         void addIngredient(Ingredient* i) { 
             ingredients.push_back(i);
@@ -62,7 +71,7 @@ class Dish : public Ingredient {
         void print(ostream& os) const {
             os << "This dish is: " << getName() << ". it has a total of " << getCalories() << " calories.\nIt contains the following: ";
             for (const Ingredient* ingredient : ingredients) {
-                os << "\n  - " << ingredient;
+                os << "  - " << ingredient;
             }
         }
 };
@@ -73,7 +82,7 @@ private:
         deque<Ingredient*> ingredients; // The deque of ingredients in the sandwich.
         bool flipped = false; // Whether the sandwich is flipped or not.
     public:
-        Sandwich(const string& n) : Ingredient(n, 0), ingredients() {}
+        Sandwich(const string& n) : Ingredient(n, 0), ingredients() { type = 'S'; }
         // Adds ingredient and its calories to the 'top' of sandwich. Top side depends on flipped state.
         void addIngredient(Ingredient* i) { 
             if (flipped) {
@@ -95,12 +104,12 @@ private:
             if (flipped) {
                 // Print ingredients in reverse order if the sandwich is flipped
                 for (auto it = ingredients.rbegin(); it != ingredients.rend(); ++it) {
-                    os << "\n  - " << *it;
+                    os << "  - " << *it;
                 }
             } else {
                 // Print ingredients in normal order if the sandwich is not flipped
                 for (const Ingredient* ingredient : ingredients) {
-                    os << "\n  - " << ingredient;
+                    os << "  - " << ingredient;
                 }
             }
         }
