@@ -1,6 +1,8 @@
 #include "Kitchen.hpp"
 #include <sstream>
 
+// Kitchen class implementation made by Ryan Igwe for Data Structures class COP4530 2026
+
 Ingredient* Kitchen::prepareIngredient(Ingredient* item) {
     string preparation; // Each perparation is a single word
     
@@ -407,11 +409,9 @@ void Kitchen::mainMenu() {
         cout << "  ---------------------------------" << endl;
         cout << "  Working at the " << name << endl;
         cout << "  Current held item: " << (currentItem ? currentItem->getName() : "None") << endl;
-        cout << "  (i) View Inventory" << endl;
-        cout << "  (n) Create New Item" << endl;
-        cout << "  (c) Cook Held Item" << endl;
-        cout << "  (p) Put Away Held Item" << endl;
-        cout << "  (x) Exit" << endl;
+        cout << "  (i) View Inventory  (n) Create New Item" << endl;
+        cout << "  (c) Cook Held Item  (p) Put Away Held Item" << endl;
+        cout << "  (x) Exit Kitchen" << endl;
 
         // Prints message based on previous action
         cout << message << endl;
@@ -474,10 +474,24 @@ void Kitchen::mainMenu() {
         // Enters inventory menu
         if (choice == 'i') {
             message = "";
-            // Picks item and removes from inventory
-            Ingredient* picked = inventoryMenu(true);
+
+            // Checks if already holding item
+            bool holding = false;
+            if (currentItem) {
+                holding = true;
+            }
+
+            // If not holding an item, allow one to be removed from inventory
+            Ingredient* picked = inventoryMenu(!holding);
             if (picked) {
-                currentItem = picked;
+                // If not holding an item, hold picked item
+                if (!holding) {
+                    currentItem = picked;
+
+                // If holding an item, notify user
+                } else {
+                    message = "Item not taked from inventory. Already holding an item.";
+                }
             }
 
         // Creates new item in hand

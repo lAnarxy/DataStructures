@@ -5,8 +5,7 @@
 using namespace std;
 
 
-// Idea - sandwich maker where ingredients can be added to the top and/or bottom using deque
-// Sandwich could be flipped to change which side is being edited.
+// Kitchen Simulator made by Ryan Igwe for Data Structures class COP4530 2026
 int main() {
     Kitchen* kitchen;
     Ingredient* currentItem = nullptr;

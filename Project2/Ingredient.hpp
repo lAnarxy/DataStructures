@@ -5,6 +5,8 @@
 #include <string>
 using namespace std;
 
+// Ingredients classes and implementation made by Ryan Igwe for Data Structures class COP4530 2026
+
 // Prototypes for stream overloads
 class Ingredient;
 class Dish;
@@ -22,10 +24,10 @@ ostream& operator<<(ostream& os, const Sandwich* s);
 // The Ingredient class is the base block of other classes, and cannot contain other ingredients itself.
 class Ingredient {
     private:
-        string name; // Name of ingredient
-        list<string> preparations; // How the ingredient is prepared. i.e., chopped, diced, boiled, etc. 
+        string name; // Name of ingredient 
 
     protected:
+        list<string> preparations; // How the ingredient is prepared. i.e., chopped, diced, boiled, etc.
         int calories; // Calories in ingredient
         char type; // Type of ingredient (child classes will differ)
     
@@ -52,7 +54,7 @@ class Ingredient {
         virtual void print(ostream& os) const {
             os << "This ingredient is: " << getName() << ". it has " << getCalories() << " calories.";
             if (!preparations.empty()) {
-                os << "\n    - Preparations: ";
+                os << "\n  - Preparations: ";
                 bool first = true;
                 for (const string& prep : preparations) {
                     os << (first? "" : ", ") << prep;
@@ -104,6 +106,14 @@ class Dish : public Ingredient {
             os << "This dish is: " << getName() << ". it has a total of " << getCalories() << " calories.\n  It contains the following: ";
             for (const Ingredient* ingredient : ingredients) {
                 os << "\n  - " << ingredient;
+            }
+            if (!preparations.empty()) {
+                os << "\n  - This Dish was: ";
+                bool first = true;
+                for (const string& prep : preparations) {
+                    os << (first? "" : ", ") << prep;
+                    first = false;
+                }
             }
         }
 };
@@ -168,6 +178,14 @@ private:
                 // Print ingredients in normal order if the sandwich is not flipped
                 for (const Ingredient* ingredient : ingredients) {
                     os << "\n  - " << ingredient;
+                }
+            }
+            if (!preparations.empty()) {
+                os << "\n  - This Sandwich was: ";
+                bool first = true;
+                for (const string& prep : preparations) {
+                    os << (first? "" : ", ") << prep;
+                    first = false;
                 }
             }
         }

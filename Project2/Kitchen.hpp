@@ -2,6 +2,10 @@
 #include <iostream>
 #include "Ingredient.hpp"
 
+// Kitchen class made by Ryan Igwe for Data Structures class COP4530 2026
+
+// Kitchen class holds Ingredient inventory, and has various methods
+// for cooking ingredients, sandwiches, and dishes.
 class Kitchen {
     private:
         string name = "Kitchen"; // Name of kitchen
