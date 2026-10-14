@@ -4,11 +4,10 @@
 
 class Kitchen {
     private:
-        // Inventory will be able to hold up to 16 previously made 
-        // ingredients, dishes, or sandwiches which can be used in any amount.
+        // Inventory will be able to hold (up to 24 by default) previously made 
+        // ingredients, dishes, or sandwiches which can be used cooking.
         string name = "Kitchen";
         Ingredient** inventory;
-        char* inventoryID; // Tracks what object each element is
         int size;
         int pageSize;
     public:
@@ -16,10 +15,8 @@ class Kitchen {
             this->size = size;
             this->pageSize = pageSize;
             inventory = new Ingredient*[size];
-            inventoryID = new char[size];
             for (int i = 0; i < size; ++i) {
                 inventory[i] = nullptr;
-                inventoryID[i] = '\0';
             }
         }
         ~Kitchen() {
@@ -27,16 +24,15 @@ class Kitchen {
                 delete inventory[i];
             }
             delete[] inventory;
-            delete[] inventoryID;
         }
 
         Ingredient* prepareIngredient(Ingredient* item);
-        Ingredient* prepareSandwich(Ingredient* item);
-        Ingredient* prepareDish(Ingredient* item);
+        Ingredient* prepareSandwich(Sandwich* item);
+        Ingredient* prepareDish(Dish* item);
         string getName() const { return name; }
         void setName(const string& newName) { name = newName; }
-        void addItem(Ingredient* item);
+        bool addItem(Ingredient* item);
         Ingredient* getItem(int index);
-        Ingredient* inventoryMenu();
+        Ingredient* inventoryMenu(bool taking = false);
         void mainMenu();
 };

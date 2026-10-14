@@ -13,7 +13,7 @@ int main() {
 
     // Setup the kitchen with user input
     cout << "  ------       Welcome to the Kitchen Simulator!       ------" << endl;
-    cout << "For ease of use we recommend increasing the size of the terminal!\n\n" << endl;
+    cout << "For ease of use we recommend increasing the size of the terminal!\n" << endl;
     cout << "Lets create your first kitchen!" << endl;
     string name;
     cout << "Enter the name of your kitchen: " << endl;
@@ -30,6 +30,9 @@ int main() {
     // Clamps pageSize to limit
     if (pageSize < 4) { pageSize = 4; }
     else if (pageSize > 16) { pageSize = 16; }
+
+    cout << "\n\n\n" << endl;
+
     kitchen = new Kitchen(size, pageSize);
     kitchen->setName(name);
 
@@ -39,15 +42,12 @@ int main() {
     sandwich->addIngredient(new Ingredient("Bread", 5));
     sandwich->flip(); // Flip the sandwich to change which side is being edited.
     sandwich->addIngredient(new Ingredient("Bread", 5));
-    cout << sandwich << endl;
 
     kitchen->addItem(sandwich);
-    cout << kitchen->getItem(0)->getType() << endl;
 
     
-    kitchen->inventoryMenu();
+    kitchen->mainMenu();
     // Clean up dynamically allocated memory
     delete kitchen;
-    delete sandwich;
 }
 
