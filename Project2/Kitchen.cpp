@@ -571,4 +571,6 @@ void Kitchen::mainMenu() {
 
     // User exits main menu by entering 'x'
     } while (choice != 'x');
+    delete currentItem; // Clean up held item if it exists
+    currentItem = nullptr;
 }
