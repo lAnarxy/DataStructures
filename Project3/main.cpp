@@ -2,7 +2,6 @@
 #include <fstream>
 #include <stack>
 #include <string>
-#include <tuple>
 #include <vector>
 #include <algorithm>
 using namespace std;
@@ -11,14 +10,19 @@ using namespace std;
 struct Node {
     int depth;
     int pos;
+    Node* parent;
     vector<Node*> children;
     string responseKey;
     string dialogue;
 
-    Node(int d, int p, const string& respKey, const string& dia) : depth(d), pos(p), responseKey(respKey), dialogue(dia) {}
+    Node(int d, int p, const string& respKey, const string& dia) : depth(d), pos(p), parent(nullptr), responseKey(respKey), dialogue(dia) {}
 };
 
+inline ostream& operator<<(ostream& os, const Node* n);
 Node* preToTree(vector<Node*> &nodes);
+int nodeHeight(const Node* root);
+bool isBalancedTree(const Node* root);
+bool isPerfectTree(const Node* root, int depth, int level = 0);
 
 // Dialogue tree importing and exploration
 int main() {
@@ -40,14 +44,14 @@ int main() {
     file >> depth >> pos;
     file.ignore();
     getline(file, dialogue);
-    cout << "Read node: depth=" << depth << ", pos=" << pos << ", responseKey=" << responseKey << ", dialogue=" << dialogue << endl;
+    // cout << "Read node: depth=" << depth << ", pos=" << pos << ", responseKey=" << responseKey << ", dialogue=" << dialogue << endl;
     nodes.push_back(new Node(depth, pos, "", dialogue));
 
     // Read the rest of the nodes
     while (file >> depth >> pos >> responseKey) {
         file.ignore();
         getline(file, dialogue);
-        cout << "Read node: depth=" << depth << ", pos=" << pos << ", responseKey=" << responseKey << ", dialogue=" << dialogue << endl;
+        // cout << "Read node: depth=" << depth << ", pos=" << pos << ", responseKey=" << responseKey << ", dialogue=" << dialogue << endl;
         nodes.push_back(new Node(depth, pos, responseKey, dialogue));
     }
 
@@ -87,11 +91,11 @@ int main() {
         }
     }
 
-    // Tree Analysis
-    cout << "\nWould you like to analyze the tree? (y/n): ";
-    char analyzeChoice;
-    cin >> analyzeChoice;
-    if (analyzeChoice == 'y' || analyzeChoice == 'Y') {
+    // Tree Visualization
+    char choice;
+    cout << "\nWould you like to print tree visualization? (y/n): ";
+    cin >> choice;
+    if (choice == 'y' || choice == 'Y') {
         for (Node* node : nodes) {
             for (int i = 0; i < node->depth; ++i) {
                 cout << "--";
@@ -100,6 +104,116 @@ int main() {
                 cout << "[" << node->responseKey << "] ";
             }
             cout << node->dialogue << endl;
+        }
+    }
+
+    // Tree properties
+    cout << "\nWould you like to print tree properties? (y/n): ";
+    cin >> choice;
+    if (choice == 'y' || choice == 'Y') {
+        int height = -1;
+        bool bin = true;
+        bool prop = true;
+        vector<int> internalNodes;
+        vector<int> externalNodes;
+        // Counts internal and external nodes, and checks for Binary and Proper tree conditions
+        for (const Node* node : nodes) {
+            if (!node->children.empty()) {
+                internalNodes.push_back(node->pos);
+                if(node->children.size() == 1) {
+                    prop = false;
+                }
+                if (node->children.size() > 2) {
+                    bin = false;
+                    prop = false;
+                }
+            } else {
+                externalNodes.push_back(node->pos);
+            }
+            height = max(height, node->depth);
+        }
+
+        // Prints calculated data
+        cout << "Tree Properties:" << endl;
+        cout << " - " << root << endl;
+        cout << " - Num Internal: " << internalNodes.size() << endl;
+        cout << " - Num External: " << externalNodes.size() << endl;
+        cout << " - Height: " << height + 1 << endl;
+        cout << " - Internal Nodes: " ;
+        for (int pos : internalNodes) { cout << pos << " "; }
+        cout << endl;
+        cout << " - External Nodes: " ;
+        for (int pos : externalNodes) { cout << pos << " "; }
+        cout << endl;
+        cout << " - Is Binary: " << (bin ? "Yes" : "No") << endl;
+        if (bin) {
+            cout << " - Is Proper: " << (prop ? "Yes" : "No") << endl;
+            cout << " - Is Perfect: " << (isPerfectTree(root, height) ? "Yes" : "No") << endl;
+            cout << " - Is Balanced: " << (isBalancedTree(root) ? "Yes" : "No") << endl;
+        }
+    }
+
+    // Tree Exploration
+    cout << "\nWould you like to further explore the tree? (y/n): ";
+    cin >> choice;
+    if (choice == 'y' || choice == 'Y') {
+        int explorePos;
+        string input;
+        Node* exploreNode = nullptr;
+        while (input != "exit") {
+            cout << "\nWhich node would you like to explore (enter position or \"exit\"): ";
+            if (cin >> explorePos) {
+                exploreNode= nodes[explorePos - 1];
+            } else {
+                cin.clear();
+                cin >> input;
+                if (input == "exit") {
+                    cout << "Goodbye!" << endl;
+                    break;
+                } else {
+                    cout << "Invalid input. Please try again." << endl;
+                    continue;
+                }
+            }
+            if (explorePos < 0 || explorePos > nodes.size()) {
+                cout << "Invalid input. Please try again." << endl;
+                continue;
+            }
+
+            // Prints explored node
+            cout << exploreNode << endl;
+
+            // Prints one ancestor
+            cout << "Ancestor: ";
+            if (exploreNode->parent) {
+                cout << exploreNode->parent << endl;
+            } else {
+                cout << "None" << endl;
+            }
+
+            // Prints one descendent
+            cout << "Descendant: ";
+            if (!exploreNode->children.empty()) {
+                cout << exploreNode->children[0] << endl;
+            } else {
+                cout << "None" << endl;
+            }
+
+            // Prints one sibling
+            cout << "Sibling: ";
+            if (exploreNode->parent && exploreNode->parent->children.size() > 1) {
+                Node* sibling = nullptr;
+                for (const auto& child : exploreNode->parent->children) {
+                    if (child != exploreNode) {
+                        sibling = child;
+                        break;
+                    }
+                }
+                cout << sibling << endl;
+            } else {
+                cout << "None" << endl;
+            }
+
         }
     }
 }
@@ -127,10 +241,49 @@ Node* preToTree(vector<Node*> &nodes) {
         if (!st.empty()) {
             Node* parent = st.top();
             parent->children.push_back(current);
+            current->parent = parent;
         }
         // Push the current node onto the stack
         st.push(current);
     }
 
     return root;
+}
+
+// Checks if tree is perfect
+bool isPerfectTree(const Node* root, int depth, int level) {
+    // Empty tree is perfect
+    if (!root) { return true; }
+    // If current node is second to last level, it must have 2 children exactly.
+    if (level == depth - 1) { return root->children.size() == 2; }
+    bool leftPerfect = isPerfectTree(root->children[0], depth, level + 1);
+    bool rightPerfect = isPerfectTree(root->children[1], depth, level + 1);
+    return leftPerfect && rightPerfect;
+}
+
+// Height checker for balance function
+// Returns the height of the tree if child subtrees height differ by at most 1, returns -1 otherwise
+int nodeHeight(const Node* root) {
+    if (!root) return 0;
+    int leftHeight = nodeHeight(root->children[0]);
+    int rightHeight = nodeHeight(root->children[1]);
+    if (leftHeight == -1 || rightHeight == -1 || abs(leftHeight - rightHeight) > 1) {
+        return -1;
+    }
+    return max(leftHeight, rightHeight) + 1;
+}
+
+// Checks if tree is balanced, returns -1 if not
+bool isBalancedTree(const Node* root) {
+    return nodeHeight(root) != -1;
+}
+
+// Operator overload for printing nodes.
+inline ostream& operator<<(ostream& os, const Node* n) {
+    if (n->depth == 0) {
+        os << "Root Node: " << n->dialogue;
+    } else {
+        os << "Node at preorder position " << n->pos << ", depth " << n->depth << ". [" << n->responseKey << "] " << n->dialogue;
+    }
+    return os;
 }
