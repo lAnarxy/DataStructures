@@ -28,6 +28,7 @@ bool isPerfectTree(const Node* root, int depth, int level = 0);
 int main() {
     string filename;
     ifstream file;
+    string outputName = "about_tree.txt";
     // Prompt user for filename until a valid file is opened
     while (!file.is_open() || filename == "x") {
         file.clear();
@@ -54,6 +55,7 @@ int main() {
         // cout << "Read node: depth=" << depth << ", pos=" << pos << ", responseKey=" << responseKey << ", dialogue=" << dialogue << endl;
         nodes.push_back(new Node(depth, pos, responseKey, dialogue));
     }
+    file.close();
 
     // Sort by preorder positon then construct the tree
     sort(nodes.begin(), nodes.end(), [](Node* a, Node* b) { return a->pos < b->pos; });
@@ -91,70 +93,67 @@ int main() {
         }
     }
 
+    // Output file
+    ofstream outputFile(outputName);
+
     // Tree Visualization
-    char choice;
-    cout << "\nWould you like to print tree visualization? (y/n): ";
-    cin >> choice;
-    if (choice == 'y' || choice == 'Y') {
-        for (Node* node : nodes) {
-            for (int i = 0; i < node->depth; ++i) {
-                cout << "--";
-            }
-            if (!node->responseKey.empty()) {
-                cout << "[" << node->responseKey << "] ";
-            }
-            cout << node->dialogue << endl;
+    outputFile << "Tree Visualization:" << endl;
+    for (Node* node : nodes) {
+        for (int i = 0; i < node->depth; ++i) {
+            outputFile << "--";
         }
+        if (!node->responseKey.empty()) {
+            outputFile << "[" << node->responseKey << "] ";
+        }
+        outputFile << node->dialogue << endl;
     }
 
     // Tree properties
-    cout << "\nWould you like to print tree properties? (y/n): ";
-    cin >> choice;
-    if (choice == 'y' || choice == 'Y') {
-        int height = -1;
-        bool bin = true;
-        bool prop = true;
-        vector<int> internalNodes;
-        vector<int> externalNodes;
-        // Counts internal and external nodes, and checks for Binary and Proper tree conditions
-        for (const Node* node : nodes) {
-            if (!node->children.empty()) {
-                internalNodes.push_back(node->pos);
-                if(node->children.size() == 1) {
-                    prop = false;
-                }
-                if (node->children.size() > 2) {
-                    bin = false;
-                    prop = false;
-                }
-            } else {
-                externalNodes.push_back(node->pos);
+    int height = -1;
+    bool bin = true;
+    bool prop = true;
+    vector<int> internalNodes;
+    vector<int> externalNodes;
+    // Counts internal and external nodes, and checks for Binary and Proper tree conditions
+    for (const Node* node : nodes) {
+        if (!node->children.empty()) {
+            internalNodes.push_back(node->pos);
+            if(node->children.size() == 1) {
+                prop = false;
             }
-            height = max(height, node->depth);
+            if (node->children.size() > 2) {
+                bin = false;
+                prop = false;
+            }
+        } else {
+            externalNodes.push_back(node->pos);
         }
-
-        // Prints calculated data
-        cout << "Tree Properties:" << endl;
-        cout << " - " << root << endl;
-        cout << " - Num Internal: " << internalNodes.size() << endl;
-        cout << " - Num External: " << externalNodes.size() << endl;
-        cout << " - Height: " << height + 1 << endl;
-        cout << " - Internal Nodes: " ;
-        for (int pos : internalNodes) { cout << pos << " "; }
-        cout << endl;
-        cout << " - External Nodes: " ;
-        for (int pos : externalNodes) { cout << pos << " "; }
-        cout << endl;
-        cout << " - Is Binary: " << (bin ? "Yes" : "No") << endl;
-        if (bin) {
-            cout << " - Is Proper: " << (prop ? "Yes" : "No") << endl;
-            cout << " - Is Perfect: " << (isPerfectTree(root, height) ? "Yes" : "No") << endl;
-            cout << " - Is Balanced: " << (isBalancedTree(root) ? "Yes" : "No") << endl;
-        }
+        height = max(height, node->depth);
     }
+
+    // Prints calculated data
+    outputFile << "\nTree Properties:" << endl;
+    outputFile << " - " << root << endl;
+    outputFile << " - Num Internal: " << internalNodes.size() << endl;
+    outputFile << " - Num External: " << externalNodes.size() << endl;
+    outputFile << " - Height: " << height + 1 << endl;
+    outputFile << " - Internal Nodes: " ;
+    for (int pos : internalNodes) { outputFile << pos << " "; }
+    outputFile << endl;
+    outputFile << " - External Nodes: " ;
+    for (int pos : externalNodes) { outputFile << pos << " "; }
+    outputFile << endl;
+    outputFile << " - Is Binary: " << (bin ? "Yes" : "No") << endl;
+    if (bin) {
+        outputFile << " - Is Proper: " << (prop ? "Yes" : "No") << endl;
+        outputFile << " - Is Perfect: " << (isPerfectTree(root, height) ? "Yes" : "No") << endl;
+        outputFile << " - Is Balanced: " << (isBalancedTree(root) ? "Yes" : "No") << endl;
+    }
+    outputFile.close();
 
     // Tree Exploration
     cout << "\nWould you like to further explore the tree? (y/n): ";
+    char choice;
     cin >> choice;
     if (choice == 'y' || choice == 'Y') {
         int explorePos;
