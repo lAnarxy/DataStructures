@@ -256,8 +256,15 @@ bool isPerfectTree(const Node* root, int depth, int level) {
     if (!root) { return true; }
     // If current node is second to last level, it must have 2 children exactly.
     if (level == depth - 1) { return root->children.size() == 2; }
-    bool leftPerfect = isPerfectTree(root->children[0], depth, level + 1);
-    bool rightPerfect = isPerfectTree(root->children[1], depth, level + 1);
+    bool leftPerfect = true;
+    bool rightPerfect = true;
+    if (root->children.size() == 2) {
+        leftPerfect = isPerfectTree(root->children[0], depth, level + 1);
+        rightPerfect = isPerfectTree(root->children[1], depth, level + 1);
+    } else if (root->children.size() == 1) {
+        leftPerfect = isPerfectTree(root->children[0], depth, level + 1);
+        rightPerfect = true;
+    }
     return leftPerfect && rightPerfect;
 }
 
@@ -265,8 +272,15 @@ bool isPerfectTree(const Node* root, int depth, int level) {
 // Returns the height of the tree if child subtrees height differ by at most 1, returns -1 otherwise
 int nodeHeight(const Node* root) {
     if (!root) return 0;
-    int leftHeight = nodeHeight(root->children[0]);
-    int rightHeight = nodeHeight(root->children[1]);
+    int leftHeight = 0;
+    int rightHeight = 0;
+    if (root->children.size() == 2) {
+        leftHeight = nodeHeight(root->children[0]);
+        rightHeight = nodeHeight(root->children[1]);
+    } else if (root->children.size() == 1) {
+        leftHeight = nodeHeight(root->children[0]);
+        rightHeight = 0;
+    } 
     if (leftHeight == -1 || rightHeight == -1 || abs(leftHeight - rightHeight) > 1) {
         return -1;
     }
